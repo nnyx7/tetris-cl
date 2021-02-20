@@ -12,30 +12,28 @@ const COLS: u16 = 10;
 
 pub struct Board {
     state: Vec<Vec<Color>>,
-    rows: u16,
-    cols: u16,
+    rect: Rect,
 }
 
 impl Default for Board {
     fn default() -> Board {
         let mut state: Vec<Vec<Color>> = Vec::new();
-        let rows = ROWS;
-        let cols = COLS;
+        let rect = Rect{x: 0, y: 0, width: COLS, height: ROWS};
 
-        for i in 0..cols {
+        for i in 0..rect.height {
             state.push(Vec::new());
-            for _ in 0..rows {
+            for _ in 0..rect.width {
                 state[i as usize].push(Color::Black)
             }
         }
-        return Board { state, rows, cols };
+        return Board { state, rect };
     }
 }
 
 impl Widget for Board {
     fn render(self, area: Rect, buffer: &mut Buffer) {
-        for i in 0..self.cols {
-            for j in 0..self.rows {
+        for i in 0..self.rect.width {
+            for j in 0..self.rect.height {
                 if i < buffer.area().width && j < buffer.area().height {
                     let x = area.x + i;
                     let y = area.y + j;
@@ -48,6 +46,10 @@ impl Widget for Board {
 }
 
 impl Board {
+    pub fn rect(&self) -> Rect {
+        self.rect
+    }
+
     pub fn draw_block(&mut self, block: &Block) {
         let pos = block.position();
         for cell in pos {
