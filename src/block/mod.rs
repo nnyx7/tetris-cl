@@ -49,13 +49,18 @@ impl Block {
         let cur_pos_rect = self.pos_rects[self.cur_pos].clone();
         // If the block is in the right corner, move it left enough to rotate
         while self.rect.x as i16 + cur_pos_rect.x < rect.x as i16 {
-            self.move_left(rect);
-        }
-        // If the block is in the left cornet, move it right enough to rotate
-        while self.rect.x as i16 + cur_pos_rect.x > (rect.x + rect.width) as i16 {
             self.move_right(rect);
         }
+        // If the block is in the left cornet, move it right enough to rotate
+        while self.rect.x as i16 + cur_pos_rect.width as i16 + cur_pos_rect.x> (rect.x + rect.width) as i16 {
+            self.move_left(rect);
+        }
+        // If the block is in the bottom, move it up enough to rotate
+        while self.rect.y  + cur_pos_rect.height > (rect.y + rect.height){
+            self.move_up(rect);
+        }
         self.rect.x = (self.rect.x as i16 + cur_pos_rect.x) as u16;
+        self.rect.y = (self.rect.y as i16 + cur_pos_rect.y) as u16;
         self.rect.width = cur_pos_rect.width;
         self.rect.height = cur_pos_rect.height;
     }
@@ -77,5 +82,10 @@ impl Block {
             self.rect.y = self.rect.y + 1;
         }
     }
-}
 
+    pub fn move_up(&mut self, rect: &Rect) {
+        if self.rect.y as i16 - 1 >= rect.y as i16 {
+            self.rect.y = self.rect.y - 1;
+        }
+    }
+}
