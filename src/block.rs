@@ -10,20 +10,19 @@ pub struct Cell {
 
 #[derive(Debug, Clone)]
 pub struct Block {
-    init_pos: Position,
+    cur_pos: usize,
     color: Color,
     positions: Vec<Position>,
     rect: Rect,
-    pos_index: u8,
 }
 
 impl Block {
     pub fn position(&self) -> Position {
         let mut pos = Position::new();
-
-        for i in 0..self.init_pos.len() {
-            let x = self.init_pos[i].x + self.rect.x;
-            let y = self.init_pos[i].y + self.rect.y;
+        let cur_pos = &self.positions[self.cur_pos];
+        for i in 0..cur_pos.len() {
+            let x = cur_pos[i].x + self.rect.x;
+            let y = cur_pos[i].y + self.rect.y;
             pos.push(Cell { x, y })
         }
         pos
@@ -34,13 +33,12 @@ impl Block {
     pub fn rect(&self) -> Rect {
         self.rect
     }
-    pub fn rotate(&mut self) -> Position {
-        self.pos_index = (self.pos_index + 1) % (self.positions.len() as u8);
-        self.positions[self.pos_index as usize].clone()
+    pub fn rotate(&mut self) {
+        self.cur_pos = (self.cur_pos + 1) % self.positions.len();
     }
 
     pub fn new_cyan() -> Block {
-        let init_pos = CYAN_POS_HORIZONTAL.into();
+        let cur_pos = 0;
         let color = CYAN_COLOR;
         let positions = vec![
             CYAN_POS_HORIZONTAL.into(),
@@ -54,19 +52,17 @@ impl Block {
             width: 4,
             height: 4,
         };
-        let pos_index = 0;
 
         Block {
-            init_pos,
+            cur_pos,
             color,
             positions,
             rect,
-            pos_index,
         }
     }
 
     pub fn new_blue() -> Block {
-        let init_pos = BLUE_POS_U.into();
+        let cur_pos = 0;
         let color = BLUE_COLOR;
         let positions = vec![
             BLUE_POS_U.into(),
@@ -80,19 +76,17 @@ impl Block {
             width: 3,
             height: 3,
         };
-        let pos_index = 0;
 
         Block {
-            init_pos,
+            cur_pos,
             color,
             positions,
             rect,
-            pos_index,
         }
     }
 
     pub fn new_orange() -> Block {
-        let init_pos = ORANGE_POS_U.into();
+        let cur_pos = 0;
         let color = ORANGE_COLOR;
         let positions = vec![
             ORANGE_POS_U.into(),
@@ -106,19 +100,17 @@ impl Block {
             width: 3,
             height: 3,
         };
-        let pos_index = 0;
 
         Block {
-            init_pos,
+            cur_pos,
             color,
             positions,
             rect,
-            pos_index,
         }
     }
 
     pub fn new_green() -> Block {
-        let init_pos = GREEN_POS_HORIZONTAL.into();
+        let cur_pos = 0;
         let color = GREEN_COLOR;
         let positions = vec![
             GREEN_POS_HORIZONTAL.into(),
@@ -132,19 +124,17 @@ impl Block {
             width: 3,
             height: 3,
         };
-        let pos_index = 0;
 
         Block {
-            init_pos,
+            cur_pos,
             color,
             positions,
             rect,
-            pos_index,
         }
     }
 
     pub fn new_red() -> Block {
-        let init_pos = RED_POS_HORIZONTAL.into();
+        let cur_pos = 0;
         let color = RED_COLOR;
         let positions = vec![
             RED_POS_HORIZONTAL.into(),
@@ -158,19 +148,17 @@ impl Block {
             width: 3,
             height: 3,
         };
-        let pos_index = 0;
 
         Block {
-            init_pos,
+            cur_pos,
             color,
             positions,
             rect,
-            pos_index,
         }
     }
 
     pub fn new_purple() -> Block {
-        let init_pos = PURPLE_POS_U.into();
+        let cur_pos = 0;
         let color = PURPLE_COLOR;
         let positions = vec![
             PURPLE_POS_U.into(),
@@ -184,19 +172,17 @@ impl Block {
             width: 3,
             height: 3,
         };
-        let pos_index = 0;
 
         Block {
-            init_pos,
+            cur_pos,
             color,
             positions,
             rect,
-            pos_index,
         }
     }
 
     pub fn new_yellow() -> Block {
-        let init_pos = YELLOW_POS.into();
+        let cur_pos = 0;
         let color = YELLOW_COLOR;
         let positions = vec![YELLOW_POS.into()];
         let rect = Rect {
@@ -205,14 +191,12 @@ impl Block {
             width: 2,
             height: 2,
         };
-        let pos_index = 0;
 
         Block {
-            init_pos,
+            cur_pos,
             color,
             positions,
             rect,
-            pos_index,
         }
     }
 }
