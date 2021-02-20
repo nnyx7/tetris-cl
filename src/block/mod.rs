@@ -43,44 +43,67 @@ impl Block {
         self.color
     }
 
-    pub fn rotate(&mut self, rect: &Rect) {
+    pub fn rotate(&mut self, rect: &Rect, state: &Vec<Vec<Color>>, bg_color: &Color) {
         // Change to next position
         self.cur_pos = (self.cur_pos + 1) % self.positions.len();
         let cur_pos_rect = self.pos_rects[self.cur_pos].clone();
         // If the block is in the right corner, move it left enough to rotate
         while self.rect.x as i16 + cur_pos_rect.x < rect.x as i16 {
-            self.move_right(rect);
+            self.move_right(rect, state, bg_color);
         }
         // If the block is in the left cornet, move it right enough to rotate
-        while self.rect.x as i16 + cur_pos_rect.width as i16 + cur_pos_rect.x> (rect.x + rect.width) as i16 {
-            self.move_left(rect);
+        while self.rect.x as i16 + cur_pos_rect.width as i16 + cur_pos_rect.x
+            > (rect.x + rect.width) as i16
+        {
+            self.move_left(rect, state, bg_color);
         }
         // If the block is in the bottom, move it up enough to rotate
-        while self.rect.y as i16 + cur_pos_rect.height as i16 + cur_pos_rect.y > (rect.y + rect.height) as i16{
+        while self.rect.y as i16 + cur_pos_rect.height as i16 + cur_pos_rect.y
+            > (rect.y + rect.height) as i16
+        {
             self.move_up(rect);
         }
+        let before = self.rect.clone();
+
         self.rect.x = (self.rect.x as i16 + cur_pos_rect.x) as u16;
         self.rect.y = (self.rect.y as i16 + cur_pos_rect.y) as u16;
         self.rect.width = cur_pos_rect.width;
         self.rect.height = cur_pos_rect.height;
+
+        if does_intersect(&self.position(), rect, state, bg_color) {
+            self.cur_pos = (self.cur_pos + self.positions.len() - 1) % self.positions.len();
+            self.rect = before;
+        }
     }
 
-    pub fn move_right(&mut self, rect: &Rect) {
+    pub fn move_right(&mut self, rect: &Rect, state: &Vec<Vec<Color>>, bg_color: &Color) {
         if self.rect.x + self.rect.width + 1 <= rect.width {
             self.rect.x = self.rect.x + 1;
+            if does_intersect(&self.position(), rect, state, bg_color) {
+                self.rect.x = self.rect.x - 1;
+            }
         }
     }
 
-    pub fn move_left(&mut self, rect: &Rect) {
+    pub fn move_left(&mut self, rect: &Rect, state: &Vec<Vec<Color>>, bg_color: &Color) {
         if self.rect.x as i16 - 1 >= rect.x as i16 {
             self.rect.x = self.rect.x - 1;
+            if does_intersect(&self.position(), rect, state, bg_color) {
+                self.rect.x = self.rect.x + 1;
+            }
         }
     }
 
-    pub fn move_down(&mut self, rect: &Rect) {
+    pub fn move_down(&mut self, rect: &Rect, state: &Vec<Vec<Color>>, bg_color: &Color) -> bool {
         if self.rect.y + self.rect.height + 1 <= rect.height {
             self.rect.y = self.rect.y + 1;
+            if does_intersect(&self.position(), rect, state, bg_color) {
+                self.rect.y = self.rect.y - 1;
+                return false;
+            }
+            return true;
         }
+        return false;
     }
 
     pub fn move_up(&mut self, rect: &Rect) {
@@ -88,4 +111,26 @@ impl Block {
             self.rect.y = self.rect.y - 1;
         }
     }
+}
+
+fn does_intersect(
+    position: &Position,
+    rect: &Rect,
+    state: &Vec<Vec<Color>>,
+    bg_color: &Color,
+) -> bool {
+    for cell in position {
+        if cell.x >= 0 as i16
+            && cell.x < state.len() as i16
+            && cell.y >= 0 as i16
+            && cell.y < state[cell.x as usize].len() as i16
+        {
+            if state[(rect.x + cell.x as u16) as usize][(rect.y + cell.y as u16) as usize]
+                != *bg_color
+            {
+                return true;
+            }
+        }
+    }
+    return false;
 }

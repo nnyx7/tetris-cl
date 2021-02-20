@@ -28,6 +28,7 @@ lazy_static! {
 pub struct Board {
     state: Vec<Vec<Color>>,
     rect: Rect,
+    bg_color: Color,
     block: Block,
 }
 
@@ -41,18 +42,24 @@ impl Default for Board {
             height: ROWS,
         };
 
+        let bg_color = Color::Black;
+
         for i in 0..rect.width {
             state.push(Vec::new());
             for _ in 0..rect.height {
-                state[i as usize].push(Color::Black)
+                state[i as usize].push(bg_color)
             }
         }
-
         // Initialize with random block.
         let mut rng = rand::thread_rng();
         let block = TETRIS_BLOCKS[(rng.gen::<usize>() % TETRIS_BLOCKS.len()) as usize].clone();
 
-        let mut board = Board { state, rect, block };
+        let mut board = Board {
+            state,
+            rect,
+            bg_color,
+            block,
+        };
         board.draw_block();
 
         board
@@ -85,31 +92,37 @@ impl Board {
             Key::Char('w') => {
                 self.rotate();
             }
+            Key::Char('p') => {
+                self.put_block();
+            }
             _ => (),
         };
     }
 
     fn move_left(&mut self) {
         self.erase_block();
-        self.block.move_left(&self.rect);
+        self.block
+            .move_left(&self.rect, &self.state, &self.bg_color);
         self.draw_block();
     }
 
     fn move_right(&mut self) {
         self.erase_block();
-        self.block.move_right(&self.rect);
+        self.block
+            .move_right(&self.rect, &self.state, &self.bg_color);
         self.draw_block();
     }
 
     fn move_down(&mut self) {
         self.erase_block();
-        self.block.move_down(&self.rect);
+        self.block
+            .move_down(&self.rect, &self.state, &self.bg_color);
         self.draw_block();
     }
 
     fn rotate(&mut self) {
         self.erase_block();
-        self.block.rotate(&self.rect);
+        self.block.rotate(&self.rect, &self.state, &self.bg_color);
         self.draw_block();
     }
 
@@ -123,7 +136,23 @@ impl Board {
     fn erase_block(&mut self) {
         let pos = self.block.position();
         for cell in pos {
-            self.state[cell.x as usize][cell.y as usize] = Color::Black;
+            self.state[cell.x as usize][cell.y as usize] = self.bg_color;
         }
+    }
+
+    fn put_block(&mut self) {
+        self.erase_block();
+        while self
+            .block
+            .move_down(&self.rect, &self.state, &self.bg_color)
+        {}
+        self.draw_block();
+        self.init_block();
+        self.draw_block();
+    }
+
+    fn init_block(&mut self) {
+        let mut rng = rand::thread_rng();
+        self.block = TETRIS_BLOCKS[(rng.gen::<usize>() % TETRIS_BLOCKS.len()) as usize].clone();
     }
 }
