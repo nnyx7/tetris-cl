@@ -1,0 +1,35 @@
+mod event;
+
+use event::{Event, Events};
+use std::error::Error;
+use std::io;
+use termion::{event::Key, raw::IntoRawMode, screen::AlternateScreen};
+use tui::{backend::TermionBackend, Terminal};
+use tui::widgets::{Block, Borders};
+
+fn main() -> Result<(), Box<dyn Error>> {
+    // Setting up terminal
+    let stdout = io::stdout().into_raw_mode()?;
+    let stdout = AlternateScreen::from(stdout);
+    let backend = TermionBackend::new(stdout);
+    let mut terminal = Terminal::new(backend)?;
+
+    let events = Events::new();
+
+    loop {
+        terminal.draw(|f| {
+            let size = f.size();
+            let block = Block::default()
+                .title("Block")
+                .borders(Borders::ALL);
+            f.render_widget(block, size);
+        })?;
+
+        if let Event::Input(key) = events.next()? {
+            if key == Key::Char('q') {
+                break;
+            }
+        }
+    }
+    Ok(())
+}
