@@ -1,11 +1,14 @@
 mod event;
+mod layout_manager;
+
+use layout_manager::get_layouts;
 
 use event::{Event, Events};
 use std::error::Error;
 use std::io;
 use termion::{event::Key, raw::IntoRawMode, screen::AlternateScreen};
-use tui::{backend::TermionBackend, Terminal};
 use tui::widgets::{Block, Borders};
+use tui::{backend::TermionBackend, Terminal};
 
 fn main() -> Result<(), Box<dyn Error>> {
     // Setting up terminal
@@ -18,11 +21,13 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     loop {
         terminal.draw(|f| {
-            let size = f.size();
-            let block = Block::default()
-                .title("Block")
-                .borders(Borders::ALL);
-            f.render_widget(block, size);
+            let layouts = get_layouts(f.size());
+
+            let block1 = Block::default().title("Block").borders(Borders::ALL);
+            f.render_widget(block1, *layouts.get(&"first_board".to_string()).unwrap());
+
+            let block2 = Block::default().title("Block").borders(Borders::ALL);
+            f.render_widget(block2, *layouts.get(&"second_board".to_string()).unwrap());
         })?;
 
         if let Event::Input(key) = events.next()? {
