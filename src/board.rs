@@ -7,8 +7,8 @@ use tui::{
 
 use crate::block::Block;
 
-const ROWS: u16 = 14;
-const COLS: u16 = 19;
+const ROWS: u16 = 20;
+const COLS: u16 = 10;
 
 pub struct Board {
     state: Vec<Vec<Color>>,
@@ -49,9 +49,16 @@ impl Widget for Board {
 
 impl Board {
     pub fn draw_block(&mut self, block: &Block) {
-        let pos = block.init_position();
+        let pos = block.position();
         for cell in pos {
             self.state[cell.x as usize][cell.y as usize] = block.color();
+        }
+    }
+
+    pub fn erase_block(&mut self, block: &Block) {
+        let pos = block.position();
+        for cell in pos {
+            self.state[cell.x as usize][cell.y as usize] = Color::Black;
         }
     }
 }
