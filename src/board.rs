@@ -20,9 +20,9 @@ impl Default for Board {
         let mut state: Vec<Vec<Color>> = Vec::new();
         let rect = Rect{x: 0, y: 0, width: COLS, height: ROWS};
 
-        for i in 0..rect.height {
+        for i in 0..rect.width {
             state.push(Vec::new());
-            for _ in 0..rect.width {
+            for _ in 0..rect.height {
                 state[i as usize].push(Color::Black)
             }
         }
