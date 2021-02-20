@@ -56,7 +56,7 @@ impl Block {
             self.move_left(rect);
         }
         // If the block is in the bottom, move it up enough to rotate
-        while self.rect.y  + cur_pos_rect.height > (rect.y + rect.height){
+        while self.rect.y as i16 + cur_pos_rect.height as i16 + cur_pos_rect.y > (rect.y + rect.height) as i16{
             self.move_up(rect);
         }
         self.rect.x = (self.rect.x as i16 + cur_pos_rect.x) as u16;
