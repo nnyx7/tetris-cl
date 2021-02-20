@@ -1,3 +1,5 @@
+use rand::Rng;
+use termion::event::Key;
 use tui::{
     buffer::Buffer,
     layout::Rect,
@@ -10,15 +12,34 @@ use crate::block::Block;
 const ROWS: u16 = 20;
 const COLS: u16 = 10;
 
+lazy_static! {
+    static ref TETRIS_BLOCKS: [Block; 7] = [
+        Block::new_blue(),
+        Block::new_blue(),
+        Block::new_orange(),
+        Block::new_green(),
+        Block::new_red(),
+        Block::new_purple(),
+        Block::new_yellow(),
+    ];
+}
+
+#[derive(Debug, Clone)]
 pub struct Board {
     state: Vec<Vec<Color>>,
     rect: Rect,
+    block: Block,
 }
 
 impl Default for Board {
     fn default() -> Board {
         let mut state: Vec<Vec<Color>> = Vec::new();
-        let rect = Rect{x: 0, y: 0, width: COLS, height: ROWS};
+        let rect = Rect {
+            x: 0,
+            y: 0,
+            width: COLS,
+            height: ROWS,
+        };
 
         for i in 0..rect.width {
             state.push(Vec::new());
@@ -26,7 +47,15 @@ impl Default for Board {
                 state[i as usize].push(Color::Black)
             }
         }
-        return Board { state, rect };
+
+        // Initialize with random block.
+        let mut rng = rand::thread_rng();
+        let block = TETRIS_BLOCKS[(rng.gen::<usize>() % TETRIS_BLOCKS.len()) as usize].clone();
+
+        let mut board = Board { state, rect, block };
+        board.draw_block();
+
+        board
     }
 }
 
@@ -50,15 +79,15 @@ impl Board {
         self.rect
     }
 
-    pub fn draw_block(&mut self, block: &Block) {
-        let pos = block.position();
+    fn draw_block(&mut self) {
+        let pos = self.block.position();
         for cell in pos {
-            self.state[cell.x as usize][cell.y as usize] = block.color();
+            self.state[cell.x as usize][cell.y as usize] = self.block.color();
         }
     }
 
-    pub fn erase_block(&mut self, block: &Block) {
-        let pos = block.position();
+    fn erase_block(&mut self) {
+        let pos = self.block.position();
         for cell in pos {
             self.state[cell.x as usize][cell.y as usize] = Color::Black;
         }

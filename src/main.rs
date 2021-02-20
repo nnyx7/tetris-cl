@@ -3,7 +3,6 @@ mod board;
 mod event;
 mod layout_manager;
 
-use block::Block;
 use board::Board;
 use layout_manager::get_layouts;
 
@@ -12,6 +11,9 @@ use std::error::Error;
 use std::io;
 use termion::{event::Key, raw::IntoRawMode, screen::AlternateScreen};
 use tui::{backend::TermionBackend, Terminal};
+
+#[macro_use]
+extern crate lazy_static;
 
 fn main() -> Result<(), Box<dyn Error>> {
     // Setting up terminal
@@ -22,21 +24,24 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let events = Events::new();
 
+    let board = Board::default();
+
     loop {
         terminal.draw(|f| {
             let layouts = get_layouts(f.size());
 
-            let tetris_block = Block::new_cyan();
-            let mut board = Board::default();
-            board.draw_block(&tetris_block);
-            f.render_widget(board, *layouts.get(&"first_board".to_string()).unwrap());
+            f.render_widget(
+                board.clone(),
+                *layouts.get(&"first_board".to_string()).unwrap(),
+            );
         })?;
 
         if let Event::Input(key) = events.next()? {
-            if key == Key::Char('q') {
-                break;
+            match key {
+                Key::Char('q') => break,
+                _ => (),
             }
-        }
+        };
     }
     Ok(())
 }
