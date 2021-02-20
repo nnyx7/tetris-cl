@@ -14,7 +14,7 @@ const COLS: u16 = 10;
 
 lazy_static! {
     static ref TETRIS_BLOCKS: [Block; 7] = [
-        Block::new_blue(),
+        Block::new_cyan(),
         Block::new_blue(),
         Block::new_orange(),
         Block::new_green(),
