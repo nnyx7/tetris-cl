@@ -147,6 +147,7 @@ impl Board {
             .move_down(&self.rect, &self.state, &self.bg_color)
         {}
         self.draw_block();
+        self.remove_full_lines();
         self.init_block();
         self.draw_block();
     }
@@ -154,5 +155,36 @@ impl Board {
     fn init_block(&mut self) {
         let mut rng = rand::thread_rng();
         self.block = TETRIS_BLOCKS[(rng.gen::<usize>() % TETRIS_BLOCKS.len()) as usize].clone();
+    }
+
+    fn remove_full_lines(&mut self) -> usize {
+        debug_assert!(self.state.len() >= 1, "State should not be empty");
+        // Holds flags for each line if it full.
+        let mut are_lines_full_flags: Vec<bool> = vec![true; self.state[0].len()];
+
+        for col in &self.state {
+            for line_index in 0..col.len() {
+                if col[line_index] == self.bg_color {
+                    are_lines_full_flags[line_index] = false;
+                }
+            }
+        }
+
+        for col in &mut self.state {
+            for line_index in 0..col.len() {
+                if are_lines_full_flags[line_index] {
+                    col.remove(line_index);
+                    col.insert(0, self.bg_color);
+                }
+            }
+        }
+
+        let mut num_full_lines = 0;
+        for line_flag in &are_lines_full_flags {
+            if *line_flag {
+                num_full_lines += 1;
+            }
+        }
+        num_full_lines
     }
 }
