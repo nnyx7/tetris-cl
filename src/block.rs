@@ -18,8 +18,15 @@ pub struct Block {
 }
 
 impl Block {
-    pub fn init_position(&self) -> Position {
-        self.init_pos.clone()
+    pub fn position(&self) -> Position {
+        let mut pos = Position::new();
+
+        for i in 0..self.init_pos.len() {
+            let x = self.init_pos[i].x + self.rect.x;
+            let y = self.init_pos[i].y + self.rect.y;
+            pos.push(Cell { x, y })
+        }
+        pos
     }
     pub fn color(&self) -> Color {
         self.color
