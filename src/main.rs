@@ -1,7 +1,9 @@
+mod block;
 mod board;
 mod event;
 mod layout_manager;
 
+use block::Block;
 use board::Board;
 use layout_manager::get_layouts;
 
@@ -24,7 +26,9 @@ fn main() -> Result<(), Box<dyn Error>> {
         terminal.draw(|f| {
             let layouts = get_layouts(f.size());
 
-            let board = Board::default();
+            let tetris_block = Block::new_cyan();
+            let mut board = Board::default();
+            board.draw_block(&tetris_block);
             f.render_widget(board, *layouts.get(&"first_board".to_string()).unwrap());
         })?;
 

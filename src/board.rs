@@ -5,6 +5,8 @@ use tui::{
     widgets::Widget,
 };
 
+use crate::block::Block;
+
 const ROWS: u16 = 14;
 const COLS: u16 = 19;
 
@@ -41,6 +43,15 @@ impl Widget for Board {
                     buffer.get_mut(x, y).set_style(style);
                 }
             }
+        }
+    }
+}
+
+impl Board {
+    pub fn draw_block(&mut self, block: &Block) {
+        let pos = block.init_position();
+        for cell in pos {
+            self.state[cell.x as usize][cell.y as usize] = block.color();
         }
     }
 }
