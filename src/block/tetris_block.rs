@@ -392,14 +392,14 @@ const BOGRP_RECT_R: Recti16 = Recti16 {
 
 const BOGRP_RECT_D: Recti16 = Recti16 {
     x: -1,
-    y: 0,
+    y: 1,
     width: 3,
     height: 2,
 };
 
 const BOGRP_RECT_L: Recti16 = Recti16 {
     x: 0,
-    y: 0,
+    y: -1,
     width: 2,
     height: 3,
 };
