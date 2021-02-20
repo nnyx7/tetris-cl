@@ -348,9 +348,9 @@ const PURPLE_COLOR: Color = Color::Rgb(128, 0, 128);
 
 // YELLOW
 const YELLOW_POS: [Cell; 4] = [
+    Cell { x: 0, y: 0 },
+    Cell { x: 0, y: 1 },
     Cell { x: 1, y: 0 },
     Cell { x: 1, y: 1 },
-    Cell { x: 2, y: 0 },
-    Cell { x: 2, y: 1 },
 ];
 const YELLOW_COLOR: Color = Color::Yellow;
