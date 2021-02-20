@@ -24,7 +24,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let events = Events::new();
 
-    let board = Board::default();
+    let mut board = Board::default();
 
     loop {
         terminal.draw(|f| {
@@ -39,7 +39,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         if let Event::Input(key) = events.next()? {
             match key {
                 Key::Char('q') => break,
-                _ => (),
+                _ => board.make_action(&key),
             }
         };
     }

@@ -75,8 +75,42 @@ impl Widget for Board {
 }
 
 impl Board {
-    pub fn rect(&self) -> Rect {
-        self.rect
+    pub fn make_action(&mut self, key: &Key) {
+        match key {
+            Key::Char('a') => self.move_left(),
+            Key::Char('d') => self.move_right(),
+            Key::Char('s') => {
+                self.move_down();
+            }
+            Key::Char('w') => {
+                self.rotate();
+            }
+            _ => (),
+        };
+    }
+
+    fn move_left(&mut self) {
+        self.erase_block();
+        self.block.move_left(&self.rect);
+        self.draw_block();
+    }
+
+    fn move_right(&mut self) {
+        self.erase_block();
+        self.block.move_right(&self.rect);
+        self.draw_block();
+    }
+
+    fn move_down(&mut self) {
+        self.erase_block();
+        self.block.move_down(&self.rect);
+        self.draw_block();
+    }
+
+    fn rotate(&mut self) {
+        self.erase_block();
+        self.block.rotate(&self.rect);
+        self.draw_block();
     }
 
     fn draw_block(&mut self) {
