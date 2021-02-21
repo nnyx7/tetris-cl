@@ -80,15 +80,15 @@ fn main() -> Result<(), Box<dyn Error>> {
                     second_board = Board::new_player(SECOND_KEYBINDINGS.clone())
                 }
                 _ => {
-                    first_board.make_action(&key, &mut second_board);
-                    second_board.make_action(&key, &mut first_board)
+                    first_board.make_action(&key, Some(&mut second_board));
+                    second_board.make_action(&key, Some(&mut first_board));
                 }
             },
             Event::Tick => {
                 first_board.move_down();
-                first_board.tick_count(&mut second_board);
+                first_board.tick_count(Some(&mut second_board));
                 second_board.move_down();
-                second_board.tick_count(&mut first_board);
+                second_board.tick_count(Some(&mut first_board));
             }
         }
     }

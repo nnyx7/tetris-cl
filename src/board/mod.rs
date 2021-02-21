@@ -127,7 +127,7 @@ impl Board {
         board.keys = key_bindings;
         board
     }
-    pub fn make_action(&mut self, key: &Key, other_board: &mut Board) {
+    pub fn make_action(&mut self, key: &Key, other_board: Option<&mut Board>) {
         match key {
             _ if self.keys.get(&"left".to_string()).unwrap() == key => self.move_left(),
             _ if self.keys.get(&"right".to_string()).unwrap() == key => self.move_right(),
@@ -187,7 +187,7 @@ impl Board {
         }
     }
 
-    fn put_block(&mut self, other_board: &mut Board) -> usize {
+    fn put_block(&mut self, other_board: Option<&mut Board>) -> usize {
         self.erase_block();
         while self
             .block
@@ -208,7 +208,12 @@ impl Board {
         }
         self.draw_block();
 
-        other_board.add_enemy_lines(num_full_lines);
+        match other_board {
+            Some(other_board) => {
+                other_board.add_enemy_lines(num_full_lines);
+            }
+            None => ()
+        };
 
         num_full_lines
     }
@@ -253,7 +258,7 @@ impl Board {
         self.has_game_ended
     }
 
-    pub fn tick_count(&mut self, other_board: &mut Board) {
+    pub fn tick_count(&mut self, other_board: Option<&mut Board>) {
         if self.is_put_down() {
             self.tick_count += 1;
         } else {
