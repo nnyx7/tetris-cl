@@ -51,7 +51,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         match events.next()? {
             Event::Input(key) => match key {
                 Key::Char('q') => break,
-                Key::Char('r') => board = Board::default(),
+                Key::Char('r') if board.has_game_ended() => board = Board::default(),
                 _ => board.make_action(&key),
             },
             Event::Tick => {
