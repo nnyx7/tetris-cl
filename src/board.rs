@@ -75,12 +75,12 @@ impl Default for Board {
 
 impl Widget for Board {
     fn render(self, area: Rect, buffer: &mut Buffer) {
-        for i in 0..self.rect.width {
+        for i in 0..self.rect.width*2 {
             for j in 0..self.rect.height {
                 if i < buffer.area().width && j < buffer.area().height {
                     let x = area.x + i;
                     let y = area.y + j;
-                    let style = Style::default().bg(self.state[i as usize][j as usize]);
+                    let style = Style::default().bg(self.state[(i / 2) as usize][j as usize]);
                     buffer.get_mut(x, y).set_style(style);
                 }
             }
