@@ -4,16 +4,21 @@ mod move_down {
 
     mod can_perform {
         use super::*;
-        #[test]
-        fn test_cyan() {
+
+        fn test_can_perform(block_color: &str, cells_to_fill: &Vec<Cell>) {
             let mut color_state = from_char_to_color(&EMPTY_BOARD.clone());
-            let block = get_block("cyan");
+            let block = get_block(block_color);
             let mut board = Board::from_data(&color_state, &block, None);
             board.draw_block();
             board.move_down();
 
-            fill_cells(
-                &mut color_state,
+            fill_cells(&mut color_state, cells_to_fill);
+            assert!(equals(&blocks_to_fill_color(&board.state), &color_state));
+        }
+        #[test]
+        fn test_cyan() {
+            test_can_perform(
+                "cyan",
                 &vec![
                     Cell { x: 3, y: 1 },
                     Cell { x: 4, y: 1 },
@@ -21,19 +26,12 @@ mod move_down {
                     Cell { x: 6, y: 1 },
                 ],
             );
-            assert!(equals(&blocks_to_fill_color(&board.state), &color_state));
         }
 
         #[test]
         fn test_blue() {
-            let mut color_state = from_char_to_color(&EMPTY_BOARD.clone());
-            let block = get_block("blue");
-            let mut board = Board::from_data(&color_state, &block, None);
-            board.draw_block();
-            board.move_down();
-
-            fill_cells(
-                &mut color_state,
+            test_can_perform(
+                "blue",
                 &vec![
                     Cell { x: 3, y: 1 },
                     Cell { x: 3, y: 2 },
@@ -41,19 +39,12 @@ mod move_down {
                     Cell { x: 5, y: 2 },
                 ],
             );
-            assert!(equals(&blocks_to_fill_color(&board.state), &color_state));
         }
 
         #[test]
         fn test_orange() {
-            let mut color_state = from_char_to_color(&EMPTY_BOARD.clone());
-            let block = get_block("orange");
-            let mut board = Board::from_data(&color_state, &block, None);
-            board.draw_block();
-            board.move_down();
-
-            fill_cells(
-                &mut color_state,
+            test_can_perform(
+                "orange",
                 &vec![
                     Cell { x: 3, y: 2 },
                     Cell { x: 4, y: 2 },
@@ -61,19 +52,12 @@ mod move_down {
                     Cell { x: 5, y: 2 },
                 ],
             );
-            assert!(equals(&blocks_to_fill_color(&board.state), &color_state));
         }
 
         #[test]
         fn test_green() {
-            let mut color_state = from_char_to_color(&EMPTY_BOARD.clone());
-            let block = get_block("green");
-            let mut board = Board::from_data(&color_state, &block, None);
-            board.draw_block();
-            board.move_down();
-
-            fill_cells(
-                &mut color_state,
+            test_can_perform(
+                "green",
                 &vec![
                     Cell { x: 3, y: 2 },
                     Cell { x: 4, y: 1 },
@@ -81,19 +65,12 @@ mod move_down {
                     Cell { x: 5, y: 1 },
                 ],
             );
-            assert!(equals(&blocks_to_fill_color(&board.state), &color_state));
         }
 
         #[test]
         fn test_red() {
-            let mut color_state = from_char_to_color(&EMPTY_BOARD.clone());
-            let block = get_block("red");
-            let mut board = Board::from_data(&color_state, &block, None);
-            board.draw_block();
-            board.move_down();
-
-            fill_cells(
-                &mut color_state,
+            test_can_perform(
+                "red",
                 &vec![
                     Cell { x: 3, y: 1 },
                     Cell { x: 4, y: 1 },
@@ -101,19 +78,12 @@ mod move_down {
                     Cell { x: 5, y: 2 },
                 ],
             );
-            assert!(equals(&blocks_to_fill_color(&board.state), &color_state));
         }
 
         #[test]
         fn test_purple() {
-            let mut color_state = from_char_to_color(&EMPTY_BOARD.clone());
-            let block = get_block("purple");
-            let mut board = Board::from_data(&color_state, &block, None);
-            board.draw_block();
-            board.move_down();
-
-            fill_cells(
-                &mut color_state,
+            test_can_perform(
+                "purple",
                 &vec![
                     Cell { x: 3, y: 2 },
                     Cell { x: 4, y: 1 },
@@ -121,19 +91,12 @@ mod move_down {
                     Cell { x: 5, y: 2 },
                 ],
             );
-            assert!(equals(&blocks_to_fill_color(&board.state), &color_state));
         }
 
         #[test]
         fn test_yellow() {
-            let mut color_state = from_char_to_color(&EMPTY_BOARD.clone());
-            let block = get_block("yellow");
-            let mut board = Board::from_data(&color_state, &block, None);
-            board.draw_block();
-            board.move_down();
-
-            fill_cells(
-                &mut color_state,
+            test_can_perform(
+                "yellow",
                 &vec![
                     Cell { x: 4, y: 1 },
                     Cell { x: 4, y: 2 },
@@ -141,7 +104,6 @@ mod move_down {
                     Cell { x: 5, y: 2 },
                 ],
             );
-            assert!(equals(&blocks_to_fill_color(&board.state), &color_state));
         }
     }
 
