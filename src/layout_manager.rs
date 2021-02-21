@@ -11,6 +11,13 @@ const SCORE_BAR_HEIGHT: u16 = 14;
 
 const KEYS_INFO_WIDTH: u16 = 7;
 
+pub const FIRST_BOARD_KEY: &str = "first_board";
+pub const FIRST_KEY_INFO_KEY: &str = "first_keys_info";
+pub const FIRST_SCORE_BOARD_KEY: &str = "first_score_board";
+pub const SECOND_BOARD_KEY: &str = "second_board";
+pub const SECOND_KEY_INFO_KEY: &str = "second_keys_info";
+pub const SECOND_SCORE_BOARD_KEY: &str = "second_score_board";
+
 pub fn get_layouts(rect: Rect) -> HashMap<String, Rect> {
     let mut layouts: HashMap<String, Rect> = HashMap::new();
 
@@ -40,12 +47,12 @@ pub fn get_layouts(rect: Rect) -> HashMap<String, Rect> {
         get_vertical(&horizontal_chunks[4], vec![BOARD_WIDTH, KEYS_INFO_WIDTH], 1);
     let second_score_board = get_vertical(&horizontal_chunks[6], vec![SCORE_BAR_WIDTH], 0);
 
-    layouts.insert("first_board".to_string(), first_board);
-    layouts.insert("first_keys_info".to_string(), first_keys_info);
-    layouts.insert("first_score_board".to_string(), first_score_board);
-    layouts.insert("second_board".to_string(), second_board);
-    layouts.insert("second_keys_info".to_string(), second_keys_info);
-    layouts.insert("second_score_board".to_string(), second_score_board);
+    layouts.insert(FIRST_BOARD_KEY.to_string(), first_board);
+    layouts.insert(FIRST_KEY_INFO_KEY.to_string(), first_keys_info);
+    layouts.insert(FIRST_SCORE_BOARD_KEY.to_string(), first_score_board);
+    layouts.insert(SECOND_BOARD_KEY.to_string(), second_board);
+    layouts.insert(SECOND_KEY_INFO_KEY.to_string(), second_keys_info);
+    layouts.insert(SECOND_SCORE_BOARD_KEY.to_string(), second_score_board);
 
     return layouts;
 }

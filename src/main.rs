@@ -7,6 +7,10 @@ mod widgets;
 use board::{Board, DEFAULT_KEYBINDINGS, SECOND_KEYBINDINGS};
 use event::{Config, Event, Events};
 use layout_manager::get_layouts;
+use layout_manager::{
+    FIRST_BOARD_KEY, FIRST_KEY_INFO_KEY, FIRST_SCORE_BOARD_KEY, SECOND_BOARD_KEY,
+    SECOND_KEY_INFO_KEY, SECOND_SCORE_BOARD_KEY,
+};
 use std::error::Error;
 use std::io;
 use std::time::Duration;
@@ -41,27 +45,27 @@ fn main() -> Result<(), Box<dyn Error>> {
 
                 f.render_widget(
                     first_board.clone(),
-                    *layouts.get(&"first_board".to_string()).unwrap(),
+                    *layouts.get(&FIRST_BOARD_KEY.to_string()).unwrap(),
                 );
                 f.render_widget(
                     keys_info(first_board.keys()),
-                    *layouts.get(&"first_keys_info".to_string()).unwrap(),
+                    *layouts.get(&FIRST_KEY_INFO_KEY.to_string()).unwrap(),
                 );
                 f.render_widget(
                     score_bar(first_board.score()),
-                    *layouts.get(&"first_score_board".to_string()).unwrap(),
+                    *layouts.get(&FIRST_SCORE_BOARD_KEY.to_string()).unwrap(),
                 );
                 f.render_widget(
                     second_board.clone(),
-                    *layouts.get(&"second_board".to_string()).unwrap(),
+                    *layouts.get(&SECOND_BOARD_KEY.to_string()).unwrap(),
                 );
                 f.render_widget(
                     keys_info(second_board.keys()),
-                    *layouts.get(&"second_keys_info".to_string()).unwrap(),
+                    *layouts.get(&SECOND_KEY_INFO_KEY.to_string()).unwrap(),
                 );
                 f.render_widget(
                     score_bar(second_board.score()),
-                    *layouts.get(&"second_score_board".to_string()).unwrap(),
+                    *layouts.get(&SECOND_SCORE_BOARD_KEY.to_string()).unwrap(),
                 );
             } else {
                 let screen = game_over_multiplayer(
