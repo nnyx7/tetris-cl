@@ -113,7 +113,7 @@ impl Block {
     }
 }
 
-fn does_intersect(
+pub fn does_intersect(
     position: &Position,
     rect: &Rect,
     state: &Vec<Vec<Color>>,

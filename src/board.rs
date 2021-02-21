@@ -7,7 +7,7 @@ use tui::{
     widgets::Widget,
 };
 
-use crate::block::Block;
+use crate::block::{does_intersect, Block};
 
 const ROWS: u16 = 20;
 const COLS: u16 = 10;
@@ -30,6 +30,7 @@ pub struct Board {
     rect: Rect,
     bg_color: Color,
     block: Block,
+    has_game_ended: bool,
 }
 
 impl Default for Board {
@@ -54,11 +55,14 @@ impl Default for Board {
         let mut rng = rand::thread_rng();
         let block = TETRIS_BLOCKS[(rng.gen::<usize>() % TETRIS_BLOCKS.len()) as usize].clone();
 
+        let has_game_ended = false;
+
         let mut board = Board {
             state,
             rect,
             bg_color,
             block,
+            has_game_ended,
         };
         board.draw_block();
 
@@ -149,6 +153,15 @@ impl Board {
         self.draw_block();
         self.remove_full_lines();
         self.init_block();
+
+        if does_intersect(
+            &self.block.position(),
+            &self.rect,
+            &self.state,
+            &self.bg_color,
+        ) {
+            self.has_game_ended = true;
+        }
         self.draw_block();
     }
 
@@ -186,5 +199,9 @@ impl Board {
             }
         }
         num_full_lines
+    }
+
+    pub fn has_game_ended(&self) -> bool {
+        self.has_game_ended
     }
 }
