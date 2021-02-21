@@ -47,23 +47,33 @@ impl Block {
         // Change to next position
         self.cur_pos = (self.cur_pos + 1) % self.positions.len();
         let cur_pos_rect = self.pos_rects[self.cur_pos].clone();
-        // If the block is in the right corner, move it left enough to rotate
+        let before = self.rect.clone();
+        
+        // If the block is in the left corner, move it right enough to rotate
         while self.rect.x as i16 + cur_pos_rect.x < rect.x as i16 {
-            self.move_right(rect, state, bg_color);
+            if !self.move_right(rect, state, bg_color){
+                self.cur_pos = (self.cur_pos + self.positions.len() - 1) % self.positions.len();
+                return;
+            }
         }
-        // If the block is in the left cornet, move it right enough to rotate
+        // If the block is in the right cornet, move it left enough to rotate
         while self.rect.x as i16 + cur_pos_rect.width as i16 + cur_pos_rect.x
             > (rect.x + rect.width) as i16
         {
-            self.move_left(rect, state, bg_color);
+            if !self.move_left(rect, state, bg_color) {
+                self.cur_pos = (self.cur_pos + self.positions.len() - 1) % self.positions.len();
+                return;
+            }
         }
         // If the block is in the bottom, move it up enough to rotate
         while self.rect.y as i16 + cur_pos_rect.height as i16 + cur_pos_rect.y
             > (rect.y + rect.height) as i16
         {
-            self.move_up(rect);
+            if !self.move_up(rect, state, bg_color) {
+                self.cur_pos = (self.cur_pos + self.positions.len() - 1) % self.positions.len();
+                return;
+            }
         }
-        let before = self.rect.clone();
 
         self.rect.x = (self.rect.x as i16 + cur_pos_rect.x) as u16;
         self.rect.y = (self.rect.y as i16 + cur_pos_rect.y) as u16;
@@ -76,22 +86,28 @@ impl Block {
         }
     }
 
-    pub fn move_right(&mut self, rect: &Rect, state: &Vec<Vec<Color>>, bg_color: &Color) {
+    pub fn move_right(&mut self, rect: &Rect, state: &Vec<Vec<Color>>, bg_color: &Color) -> bool {
         if self.rect.x + self.rect.width + 1 <= rect.width {
             self.rect.x = self.rect.x + 1;
             if does_intersect(&self.position(), rect, state, bg_color) {
                 self.rect.x = self.rect.x - 1;
+                return false;
             }
+            return true;
         }
+        return false;
     }
 
-    pub fn move_left(&mut self, rect: &Rect, state: &Vec<Vec<Color>>, bg_color: &Color) {
+    pub fn move_left(&mut self, rect: &Rect, state: &Vec<Vec<Color>>, bg_color: &Color) -> bool {
         if self.rect.x as i16 - 1 >= rect.x as i16 {
             self.rect.x = self.rect.x - 1;
             if does_intersect(&self.position(), rect, state, bg_color) {
                 self.rect.x = self.rect.x + 1;
+                return false;
             }
+            return true;
         }
+        return false;
     }
 
     pub fn move_down(&mut self, rect: &Rect, state: &Vec<Vec<Color>>, bg_color: &Color) -> bool {
@@ -106,10 +122,16 @@ impl Block {
         return false;
     }
 
-    pub fn move_up(&mut self, rect: &Rect) {
+    pub fn move_up(&mut self, rect: &Rect, state: &Vec<Vec<Color>>, bg_color: &Color) -> bool {
         if self.rect.y as i16 - 1 >= rect.y as i16 {
             self.rect.y = self.rect.y - 1;
+            if does_intersect(&self.position(), rect, state, bg_color) {
+                self.rect.y = self.rect.y + 1;
+                return false;
+            }
+            return true;
         }
+        return false;
     }
 }
 
