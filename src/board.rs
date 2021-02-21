@@ -31,6 +31,7 @@ pub struct Board {
     bg_color: Color,
     block: Block,
     has_game_ended: bool,
+    tick_count: u8,
 }
 
 impl Default for Board {
@@ -56,6 +57,7 @@ impl Default for Board {
         let block = TETRIS_BLOCKS[(rng.gen::<usize>() % TETRIS_BLOCKS.len()) as usize].clone();
 
         let has_game_ended = false;
+        let tick_count = 0;
 
         let mut board = Board {
             state,
@@ -63,6 +65,7 @@ impl Default for Board {
             bg_color,
             block,
             has_game_ended,
+            tick_count,
         };
         board.draw_block();
 
@@ -203,5 +206,26 @@ impl Board {
 
     pub fn has_game_ended(&self) -> bool {
         self.has_game_ended
+    }
+
+    pub fn tick_count(&mut self) {
+        if self.is_put_down() {
+            self.tick_count += 1;
+        } else {
+            self.tick_count = 0;
+        }
+
+        if self.tick_count == 3 {
+            self.put_block();
+            self.tick_count = 0;
+    }
+    }
+
+    pub fn is_put_down(&mut self) -> bool {
+        let mut block_copy = self.block.clone();
+        self.erase_block();
+        let ans = !block_copy.move_down(&self.rect, &self.state, &self.bg_color);
+        self.draw_block();
+        ans
     }
 }

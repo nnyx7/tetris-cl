@@ -5,11 +5,12 @@ mod layout_manager;
 mod screens;
 
 use board::Board;
-use event::{Event, Events};
+use event::{Config, Event, Events};
 use layout_manager::get_layouts;
 use screens::game_over;
 use std::error::Error;
 use std::io;
+use std::time::Duration;
 use termion::{event::Key, raw::IntoRawMode, screen::AlternateScreen};
 use tui::{backend::TermionBackend, Terminal};
 
@@ -23,7 +24,12 @@ fn main() -> Result<(), Box<dyn Error>> {
     let backend = TermionBackend::new(stdout);
     let mut terminal = Terminal::new(backend)?;
 
-    let events = Events::new();
+    let config = Config {
+        exit_key: Key::Char('q'),
+        tick_rate: Duration::from_millis(500),
+    };
+
+    let events =  Events::with_config(config);
 
     let mut board = Board::default();
 
@@ -42,13 +48,17 @@ fn main() -> Result<(), Box<dyn Error>> {
             }
         })?;
 
-        if let Event::Input(key) = events.next()? {
-            match key {
+        match events.next()? {
+            Event::Input(key) => match key {
                 Key::Char('q') => break,
                 Key::Char('r') => board = Board::default(),
                 _ => board.make_action(&key),
+            },
+            Event::Tick => {
+                board.make_action(&Key::Char('s'));
+                board.tick_count();
             }
-        };
+        }
     }
     Ok(())
 }
