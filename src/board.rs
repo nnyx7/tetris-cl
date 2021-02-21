@@ -1,4 +1,5 @@
 use rand::Rng;
+use std::collections::HashMap;
 use termion::event::Key;
 use tui::{
     buffer::Buffer,
@@ -23,10 +24,21 @@ lazy_static! {
         Block::new_purple(),
         Block::new_yellow(),
     ];
+    static ref DEFAULT_KEYBINDINGS: HashMap<String, Key> = [
+        ("left".to_string(), Key::Char('a')),
+        ("right".to_string(), Key::Char('d')),
+        ("down".to_string(), Key::Char('s')),
+        ("rotate".to_string(), Key::Char('w')),
+        ("put".to_string(), Key::Char('t')),
+    ]
+    .iter()
+    .cloned()
+    .collect();
 }
 
 #[derive(Debug, Clone)]
 pub struct Board {
+    keys: HashMap<String, Key>,
     state: Vec<Vec<Color>>,
     rect: Rect,
     bg_color: Color,
@@ -38,6 +50,7 @@ pub struct Board {
 
 impl Default for Board {
     fn default() -> Board {
+        let keys = DEFAULT_KEYBINDINGS.clone();
         let mut state: Vec<Vec<Color>> = Vec::new();
         let rect = Rect {
             x: 0,
@@ -63,6 +76,7 @@ impl Default for Board {
         let score = 0;
 
         let mut board = Board {
+            keys,
             state,
             rect,
             bg_color,
@@ -95,18 +109,16 @@ impl Widget for Board {
 impl Board {
     pub fn make_action(&mut self, key: &Key) {
         match key {
-            Key::Char('a') => self.move_left(),
-            Key::Char('d') => self.move_right(),
-            Key::Char('s') => {
+            _ if self.keys.get(&"left".to_string()).unwrap() == key => self.move_left(),
+            _ if self.keys.get(&"right".to_string()).unwrap() == key => self.move_right(),
+            _ if self.keys.get(&"down".to_string()).unwrap() == key => {
                 self.move_down();
                 if !self.is_put_down() {
                     self.score += 1;
                 }
             }
-            Key::Char('w') => {
-                self.rotate();
-            }
-            Key::Char('p') => {
+            _ if self.keys.get(&"rotate".to_string()).unwrap() == key => self.rotate(),
+            _ if self.keys.get(&"put".to_string()).unwrap() == key => {
                 self.put_block();
                 self.score += 5;
             }
