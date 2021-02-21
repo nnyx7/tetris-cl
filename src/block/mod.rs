@@ -16,7 +16,7 @@ pub struct Block {
     positions: Vec<Position>,
     cur_pos: usize,
     pos_rects: Vec<Recti16>,
-    rect: Rect,
+    pub rect: Rect,
 }
 
 #[derive(Debug, Clone)]

@@ -1,3 +1,5 @@
+mod tests;
+
 use rand::Rng;
 use std::collections::HashMap;
 use termion::event::Key;
