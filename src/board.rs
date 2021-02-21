@@ -24,12 +24,22 @@ lazy_static! {
         Block::new_purple(),
         Block::new_yellow(),
     ];
-    static ref DEFAULT_KEYBINDINGS: HashMap<String, Key> = [
+    pub static ref DEFAULT_KEYBINDINGS: HashMap<String, Key> = [
         ("left".to_string(), Key::Char('a')),
         ("right".to_string(), Key::Char('d')),
         ("down".to_string(), Key::Char('s')),
         ("rotate".to_string(), Key::Char('w')),
         ("put".to_string(), Key::Char('t')),
+    ]
+    .iter()
+    .cloned()
+    .collect();
+    pub static ref SECOND_KEYBINDINGS: HashMap<String, Key> = [
+        ("left".to_string(), Key::Left),
+        ("right".to_string(), Key::Right),
+        ("down".to_string(), Key::Down),
+        ("rotate".to_string(), Key::Up),
+        ("put".to_string(), Key::Char('/')),
     ]
     .iter()
     .cloned()
@@ -42,6 +52,7 @@ pub struct Board {
     state: Vec<Vec<Color>>,
     rect: Rect,
     bg_color: Color,
+    enemy_lines_color: Color,
     block: Block,
     has_game_ended: bool,
     tick_count: u8,
@@ -60,6 +71,7 @@ impl Default for Board {
         };
 
         let bg_color = Color::Black;
+        let enemy_lines_color = Color::Gray;
 
         for i in 0..rect.width {
             state.push(Vec::new());
@@ -80,6 +92,7 @@ impl Default for Board {
             state,
             rect,
             bg_color,
+            enemy_lines_color,
             block,
             has_game_ended,
             tick_count,
@@ -107,7 +120,12 @@ impl Widget for Board {
 }
 
 impl Board {
-    pub fn make_action(&mut self, key: &Key) {
+    pub fn new_player(key_bindings: HashMap<String, Key>) -> Board {
+        let mut board = Board::default();
+        board.keys = key_bindings;
+        board
+    }
+    pub fn make_action(&mut self, key: &Key, other_board: &mut Board) {
         match key {
             _ if self.keys.get(&"left".to_string()).unwrap() == key => self.move_left(),
             _ if self.keys.get(&"right".to_string()).unwrap() == key => self.move_right(),
@@ -119,7 +137,7 @@ impl Board {
             }
             _ if self.keys.get(&"rotate".to_string()).unwrap() == key => self.rotate(),
             _ if self.keys.get(&"put".to_string()).unwrap() == key => {
-                self.put_block();
+                self.put_block(other_board);
                 self.score += 5;
             }
             _ => (),
@@ -167,14 +185,15 @@ impl Board {
         }
     }
 
-    fn put_block(&mut self) {
+    fn put_block(&mut self, other_board: &mut Board) -> usize {
         self.erase_block();
         while self
             .block
             .move_down(&self.rect, &self.state, &self.bg_color)
         {}
         self.draw_block();
-        self.score += SCORE_FOR_LINE * self.remove_full_lines() as u32;
+        let num_full_lines = self.remove_full_lines();
+        self.score += SCORE_FOR_LINE * num_full_lines as u32;
         self.init_block();
 
         if does_intersect(
@@ -186,6 +205,10 @@ impl Board {
             self.has_game_ended = true;
         }
         self.draw_block();
+
+        other_board.add_enemy_lines(num_full_lines);
+
+        num_full_lines
     }
 
     fn init_block(&mut self) {
@@ -228,7 +251,7 @@ impl Board {
         self.has_game_ended
     }
 
-    pub fn tick_count(&mut self) {
+    pub fn tick_count(&mut self, other_board: &mut Board) {
         if self.is_put_down() {
             self.tick_count += 1;
         } else {
@@ -236,7 +259,7 @@ impl Board {
         }
 
         if self.tick_count == 3 {
-            self.put_block();
+            self.put_block(other_board);
             self.tick_count = 0;
         }
     }
@@ -251,5 +274,29 @@ impl Board {
 
     pub fn score(&self) -> u32 {
         self.score
+    }
+
+    fn add_enemy_line(&mut self) {
+        self.erase_block();
+
+        let mut rng = rand::thread_rng();
+        let rand_col_index = rng.gen::<usize>() % self.state.len();
+
+        for col_index in 0..self.state.len() {
+            let col = &mut self.state[col_index];
+            col.remove(0);
+            if col_index == rand_col_index {
+                col.push(self.bg_color)
+            } else {
+                col.push(self.enemy_lines_color);
+            }
+        }
+        self.draw_block();
+    }
+
+    fn add_enemy_lines(&mut self, num_lines: usize) {
+        for _ in 0..num_lines {
+            self.add_enemy_line()
+        }
     }
 }
