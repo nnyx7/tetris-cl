@@ -144,4 +144,115 @@ mod move_down {
             assert!(equals(&blocks_to_fill_color(&board.state), &color_state));
         }
     }
+
+    mod cannot_perform {
+        use super::*;
+
+        fn test_cannot_perform_bottom(block_color: &str, rect: Rect) {
+            let color_state = from_char_to_color(&EMPTY_BOARD.clone());
+            let block = get_block(block_color);
+            let mut board = Board::from_data(&color_state, &block, Some(rect));
+
+            board.draw_block();
+            let state_before = board.state.clone();
+            board.erase_block();
+            board.move_down();
+            board.draw_block();
+
+            assert!(equals(
+                &blocks_to_fill_color(&state_before),
+                &blocks_to_fill_color(&board.state)
+            ));
+        }
+        #[test]
+        fn test_cyan() {
+            test_cannot_perform_bottom(
+                "cyan",
+                Rect {
+                    x: 3,
+                    y: 19,
+                    width: 4,
+                    height: 1,
+                },
+            );
+        }
+
+        #[test]
+        fn test_blue() {
+            test_cannot_perform_bottom(
+                "blue",
+                Rect {
+                    x: 3,
+                    y: 18,
+                    width: 3,
+                    height: 2,
+                },
+            );
+        }
+
+        #[test]
+        fn test_orange() {
+            test_cannot_perform_bottom(
+                "orange",
+                Rect {
+                    x: 3,
+                    y: 18,
+                    width: 3,
+                    height: 2,
+                },
+            );
+        }
+
+        #[test]
+        fn test_green() {
+            test_cannot_perform_bottom(
+                "green",
+                Rect {
+                    x: 3,
+                    y: 18,
+                    width: 3,
+                    height: 2,
+                },
+            );
+        }
+
+        #[test]
+        fn test_red() {
+            test_cannot_perform_bottom(
+                "red",
+                Rect {
+                    x: 3,
+                    y: 18,
+                    width: 3,
+                    height: 2,
+                },
+            );
+        }
+
+        #[test]
+        fn test_purple() {
+            test_cannot_perform_bottom(
+                "purple",
+                Rect {
+                    x: 3,
+                    y: 18,
+                    width: 3,
+                    height: 2,
+                },
+            );
+        }
+
+        #[test]
+        fn test_yellow() {
+            test_cannot_perform_bottom(
+                "yellow",
+                Rect {
+                    x: 4,
+                    y: 18,
+                    width: 2,
+                    height: 2,
+                },
+            );
+        }
+    }
 }

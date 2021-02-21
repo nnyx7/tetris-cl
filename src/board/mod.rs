@@ -212,7 +212,7 @@ impl Board {
             Some(other_board) => {
                 other_board.add_enemy_lines(num_full_lines);
             }
-            None => ()
+            None => (),
         };
 
         num_full_lines
