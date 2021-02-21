@@ -9,6 +9,8 @@ const BOARD_HEIGHT: u16 = board::ROWS;
 const SCORE_BAR_WIDTH: u16 = board::ROWS;
 const SCORE_BAR_HEIGHT: u16 = 14;
 
+const KEYS_INFO_WIDTH: u16 = 7;
+
 pub fn get_layouts(rect: Rect) -> HashMap<String, Rect> {
     let mut layouts: HashMap<String, Rect> = HashMap::new();
 
@@ -29,24 +31,34 @@ pub fn get_layouts(rect: Rect) -> HashMap<String, Rect> {
         )
         .split(rect);
 
-    let first_board = get_vertical(&horizontal_chunks[0], BOARD_WIDTH);
-    let first_score_board = get_vertical(&horizontal_chunks[2], SCORE_BAR_WIDTH);
-    let second_board = get_vertical(&horizontal_chunks[4], BOARD_WIDTH);
-    let second_score_board = get_vertical(&horizontal_chunks[6], SCORE_BAR_WIDTH);
+    let first_board = get_vertical(&horizontal_chunks[0], vec![BOARD_WIDTH], 0);
+    let first_keys_info = get_vertical(&horizontal_chunks[0], vec![BOARD_WIDTH, KEYS_INFO_WIDTH], 1);
+    let first_score_board = get_vertical(&horizontal_chunks[2], vec![SCORE_BAR_WIDTH], 0);
+    let second_board = get_vertical(&horizontal_chunks[4], vec![BOARD_WIDTH],0);
+    let second_keys_info = get_vertical(&horizontal_chunks[4], vec![BOARD_WIDTH, KEYS_INFO_WIDTH], 1);
+    let second_score_board = get_vertical(&horizontal_chunks[6], vec![SCORE_BAR_WIDTH],0);
 
     layouts.insert("first_board".to_string(), first_board);
+    layouts.insert("first_keys_info".to_string(), first_keys_info);
     layouts.insert("first_score_board".to_string(), first_score_board);
     layouts.insert("second_board".to_string(), second_board);
+    layouts.insert("second_keys_info".to_string(), second_keys_info);
     layouts.insert("second_score_board".to_string(), second_score_board);
 
     return layouts;
 }
 
-fn get_vertical(chunk: &Rect, size: u16) -> Rect {
+fn get_vertical(chunk: &Rect, sizes: Vec<u16>, chunk_index: usize) -> Rect {
+    let mut constraints = vec![];
+    for size in sizes {
+        constraints.push(Constraint::Length(size));
+    }
+    constraints.push(Constraint::Min(0));
+
     Layout::default()
         .direction(Direction::Vertical)
-        .constraints([Constraint::Length(size), Constraint::Min(0)].as_ref())
-        .split(*chunk)[0]
+        .constraints(constraints.as_ref())
+        .split(*chunk)[chunk_index]
 }
 
 #[cfg(test)]

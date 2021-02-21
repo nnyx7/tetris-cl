@@ -276,6 +276,10 @@ impl Board {
         self.score
     }
 
+    pub fn keys(&self) -> HashMap<String, Key> {
+        self.keys.clone()
+    }
+
     fn add_enemy_line(&mut self) {
         self.erase_block();
 

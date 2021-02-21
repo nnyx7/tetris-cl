@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+use termion::event::Key;
 use tui::layout::Alignment;
 use tui::style::{Color, Style};
 use tui::text::{Span, Spans};
@@ -31,7 +33,7 @@ pub fn game_over_multiplayer(
 
     let mut text = vec![
         Spans::from(Span::styled("Game Over", Style::default().fg(Color::Red))),
-        Spans::from(Span::raw("")),
+        Spans::from(""),
     ];
     if has_game_ended_first && has_game_ended_second {
         text.push(Spans::from(equals));
@@ -41,7 +43,7 @@ pub fn game_over_multiplayer(
         text.push(Spans::from(first_player_wins));
     }
 
-    text.push(Spans::from(Span::raw("")));
+    text.push(Spans::from(""));
     text.append(&mut buttons_info);
 
     Paragraph::new(text)
@@ -60,6 +62,21 @@ pub fn score_bar(score: u32) -> Paragraph<'static> {
     ];
     Paragraph::new(text)
         .block(Block::default().borders(Borders::ALL))
+        .alignment(Alignment::Center)
+        .wrap(Wrap { trim: true })
+}
+
+pub fn keys_info(keys: HashMap<String, Key>) -> Paragraph<'static> {
+    let mut text = vec![Spans::from("")];
+
+    for (key, value) in keys {
+        text.push(Spans::from(Span::styled(
+            format!("{} : {:?}", key, value),
+            Style::default().fg(Color::LightRed),
+        )));
+        }
+
+    Paragraph::new(text)
         .alignment(Alignment::Center)
         .wrap(Wrap { trim: true })
 }

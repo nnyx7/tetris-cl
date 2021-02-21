@@ -12,7 +12,7 @@ use std::io;
 use std::time::Duration;
 use termion::{event::Key, raw::IntoRawMode, screen::AlternateScreen};
 use tui::{backend::TermionBackend, Terminal};
-use widgets::{game_over_multiplayer, score_bar};
+use widgets::{game_over_multiplayer, score_bar, keys_info};
 
 #[macro_use]
 extern crate lazy_static;
@@ -44,12 +44,20 @@ fn main() -> Result<(), Box<dyn Error>> {
                     *layouts.get(&"first_board".to_string()).unwrap(),
                 );
                 f.render_widget(
+                    keys_info(first_board.keys()),
+                    *layouts.get(&"first_keys_info".to_string()).unwrap(),
+                );
+                f.render_widget(
                     score_bar(first_board.score()),
                     *layouts.get(&"first_score_board".to_string()).unwrap(),
                 );
                 f.render_widget(
                     second_board.clone(),
                     *layouts.get(&"second_board".to_string()).unwrap(),
+                );
+                f.render_widget(
+                    keys_info(second_board.keys()),
+                    *layouts.get(&"second_keys_info".to_string()).unwrap(),
                 );
                 f.render_widget(
                     score_bar(second_board.score()),
