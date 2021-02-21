@@ -1,26 +1,16 @@
 use crate::block;
 
-use block::{Block, Cell, Recti16};
+use block::{Block, Cell, Position, Recti16};
 use tui::{layout::Rect, style::Color};
+
+use lazy_static;
 
 impl Block {
     pub fn new_cyan() -> Block {
         let color = CYAN_COLOR;
-        let positions = vec![
-            CYAN_POS_HORIZONTAL.into(),
-            CYAN_POS_VERTICAL.into(),
-            CYAN_POS_HORIZONTAL.into(),
-            CYAN_POS_VERTICAL.into(),
-        ];
+        let positions = CYAN_POSITIONS.clone();
         let cur_pos = 0;
-
-        let pos_rects = vec![
-            CYAN_RECT_HORIZONTAL_L,
-            CYAN_RECT_VERTICAL_R,
-            CYAN_RECT_HORIZONTAL_R,
-            CYAN_RECT_VERTICAL_L,
-        ];
-
+        let pos_rects = CYAN_RECTS.clone();
         let rect = CYAN_INIT_RECT;
 
         Block {
@@ -34,17 +24,11 @@ impl Block {
 
     pub fn new_blue() -> Block {
         let color = BLUE_COLOR;
-        let positions = vec![
-            BLUE_POS_U.into(),
-            BLUE_POS_R.into(),
-            BLUE_POS_D.into(),
-            BLUE_POS_L.into(),
-        ];
+        let positions = BLUE_POSITIONS.clone();
         let cur_pos = 0;
-
-        let pos_rects = vec![BOGRP_RECT_U, BOGRP_RECT_R, BOGRP_RECT_D, BOGRP_RECT_L];
-
+        let pos_rects = BOGRP_RECTS.clone();
         let rect = BOGRP_INIT_RECT;
+
         Block {
             color,
             positions,
@@ -56,16 +40,9 @@ impl Block {
 
     pub fn new_orange() -> Block {
         let color = ORANGE_COLOR;
-        let positions = vec![
-            ORANGE_POS_U.into(),
-            ORANGE_POS_R.into(),
-            ORANGE_POS_D.into(),
-            ORANGE_POS_L.into(),
-        ];
+        let positions = ORANGE_POSITIONS.clone();
         let cur_pos = 0;
-
-        let pos_rects = vec![BOGRP_RECT_U, BOGRP_RECT_R, BOGRP_RECT_D, BOGRP_RECT_L];
-
+        let pos_rects = BOGRP_RECTS.clone();
         let rect = BOGRP_INIT_RECT;
 
         Block {
@@ -79,16 +56,9 @@ impl Block {
 
     pub fn new_green() -> Block {
         let color = GREEN_COLOR;
-        let positions = vec![
-            GREEN_POS_HORIZONTAL.into(),
-            GREEN_POS_VERTICAL.into(),
-            GREEN_POS_HORIZONTAL.into(),
-            GREEN_POS_VERTICAL.into(),
-        ];
+        let positions = GREEN_POSITIONS.clone();
         let cur_pos = 0;
-
-        let pos_rects = vec![BOGRP_RECT_U, BOGRP_RECT_R, BOGRP_RECT_D, BOGRP_RECT_L];
-
+        let pos_rects = BOGRP_RECTS.clone();
         let rect = BOGRP_INIT_RECT;
 
         Block {
@@ -102,16 +72,9 @@ impl Block {
 
     pub fn new_red() -> Block {
         let color = RED_COLOR;
-        let positions = vec![
-            RED_POS_HORIZONTAL.into(),
-            RED_POS_VERTICAL.into(),
-            RED_POS_HORIZONTAL.into(),
-            RED_POS_VERTICAL.into(),
-        ];
+        let positions = RED_POSITIONS.clone();
         let cur_pos = 0;
-
-        let pos_rects = vec![BOGRP_RECT_U, BOGRP_RECT_R, BOGRP_RECT_D, BOGRP_RECT_L];
-
+        let pos_rects = BOGRP_RECTS.clone();
         let rect = BOGRP_INIT_RECT;
 
         Block {
@@ -125,16 +88,9 @@ impl Block {
 
     pub fn new_purple() -> Block {
         let color = PURPLE_COLOR;
-        let positions = vec![
-            PURPLE_POS_U.into(),
-            PURPLE_POS_R.into(),
-            PURPLE_POS_D.into(),
-            PURPLE_POS_L.into(),
-        ];
+        let positions = PURPLE_POSITIONS.clone();
         let cur_pos = 0;
-
-        let pos_rects = vec![BOGRP_RECT_U, BOGRP_RECT_R, BOGRP_RECT_D, BOGRP_RECT_L];
-
+        let pos_rects = BOGRP_RECTS.clone();
         let rect = BOGRP_INIT_RECT;
 
         Block {
@@ -150,9 +106,7 @@ impl Block {
         let color = YELLOW_COLOR;
         let positions = vec![YELLOW_POS.into()];
         let cur_pos = 0;
-
         let pos_rects = vec![YELLOW_RECT];
-
         let rect = YELLOW_INIT_RECT;
 
         Block {
@@ -219,6 +173,21 @@ const CYAN_INIT_RECT: Rect = Rect {
     height: 1,
 };
 
+lazy_static! {
+    static ref CYAN_POSITIONS: Vec<Position> = vec![
+        CYAN_POS_HORIZONTAL.into(),
+        CYAN_POS_VERTICAL.into(),
+        CYAN_POS_HORIZONTAL.into(),
+        CYAN_POS_VERTICAL.into()
+    ];
+    static ref CYAN_RECTS: Vec<Recti16> = vec![
+        CYAN_RECT_HORIZONTAL_L,
+        CYAN_RECT_VERTICAL_R,
+        CYAN_RECT_HORIZONTAL_R,
+        CYAN_RECT_VERTICAL_L,
+    ];
+}
+
 const CYAN_COLOR: Color = Color::Cyan;
 
 // BLUE
@@ -256,6 +225,15 @@ const BLUE_POS_L: [Cell; 4] = [
     Cell { x: 1, y: 1 },
     Cell { x: 1, y: 2 },
 ];
+
+lazy_static! {
+    static ref BLUE_POSITIONS: Vec<Position> = vec![
+        BLUE_POS_U.into(),
+        BLUE_POS_R.into(),
+        BLUE_POS_D.into(),
+        BLUE_POS_L.into(),
+    ];
+}
 
 const BLUE_COLOR: Color = Color::Blue;
 
@@ -295,6 +273,15 @@ const ORANGE_POS_L: [Cell; 4] = [
     Cell { x: 1, y: 2 },
 ];
 
+lazy_static! {
+    static ref ORANGE_POSITIONS: Vec<Position> = vec![
+        ORANGE_POS_U.into(),
+        ORANGE_POS_R.into(),
+        ORANGE_POS_D.into(),
+        ORANGE_POS_L.into(),
+    ];
+}
+
 const ORANGE_COLOR: Color = Color::Rgb(255, 165, 0);
 
 // GREEN
@@ -315,6 +302,15 @@ const GREEN_POS_VERTICAL: [Cell; 4] = [
     Cell { x: 1, y: 2 },
 ];
 
+lazy_static! {
+    static ref GREEN_POSITIONS: Vec<Position> = vec![
+        GREEN_POS_HORIZONTAL.into(),
+        GREEN_POS_VERTICAL.into(),
+        GREEN_POS_HORIZONTAL.into(),
+        GREEN_POS_VERTICAL.into(),
+    ];
+}
+
 const GREEN_COLOR: Color = Color::Green;
 
 // RED
@@ -334,6 +330,15 @@ const RED_POS_VERTICAL: [Cell; 4] = [
     Cell { x: 1, y: 0 },
     Cell { x: 1, y: 1 },
 ];
+
+lazy_static! {
+    static ref RED_POSITIONS: Vec<Position> = vec![
+        RED_POS_HORIZONTAL.into(),
+        RED_POS_VERTICAL.into(),
+        RED_POS_HORIZONTAL.into(),
+        RED_POS_VERTICAL.into(),
+    ];
+}
 
 const RED_COLOR: Color = Color::Red;
 
@@ -373,6 +378,14 @@ const PURPLE_POS_L: [Cell; 4] = [
     Cell { x: 1, y: 2 },
 ];
 
+lazy_static! {
+    static ref PURPLE_POSITIONS: Vec<Position> = vec![
+        PURPLE_POS_U.into(),
+        PURPLE_POS_R.into(),
+        PURPLE_POS_D.into(),
+        PURPLE_POS_L.into(),
+    ];
+}
 const PURPLE_COLOR: Color = Color::Rgb(128, 0, 128);
 
 // BLUE & ORANGE & GREEN & RED & PURPLE
@@ -410,6 +423,11 @@ const BOGRP_INIT_RECT: Rect = Rect {
     width: 3,
     height: 2,
 };
+
+lazy_static! {
+    static ref BOGRP_RECTS: Vec<Recti16> =
+        vec![BOGRP_RECT_U, BOGRP_RECT_R, BOGRP_RECT_D, BOGRP_RECT_L];
+}
 
 // YELLOW
 const YELLOW_POS: [Cell; 4] = [
