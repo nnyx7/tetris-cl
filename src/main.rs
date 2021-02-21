@@ -12,7 +12,7 @@ use std::io;
 use std::time::Duration;
 use termion::{event::Key, raw::IntoRawMode, screen::AlternateScreen};
 use tui::{backend::TermionBackend, Terminal};
-use widgets::{game_over_multiplayer, score_bar, keys_info};
+use widgets::{game_over_multiplayer, keys_info, score_bar};
 
 #[macro_use]
 extern crate lazy_static;

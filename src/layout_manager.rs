@@ -32,11 +32,13 @@ pub fn get_layouts(rect: Rect) -> HashMap<String, Rect> {
         .split(rect);
 
     let first_board = get_vertical(&horizontal_chunks[0], vec![BOARD_WIDTH], 0);
-    let first_keys_info = get_vertical(&horizontal_chunks[0], vec![BOARD_WIDTH, KEYS_INFO_WIDTH], 1);
+    let first_keys_info =
+        get_vertical(&horizontal_chunks[0], vec![BOARD_WIDTH, KEYS_INFO_WIDTH], 1);
     let first_score_board = get_vertical(&horizontal_chunks[2], vec![SCORE_BAR_WIDTH], 0);
-    let second_board = get_vertical(&horizontal_chunks[4], vec![BOARD_WIDTH],0);
-    let second_keys_info = get_vertical(&horizontal_chunks[4], vec![BOARD_WIDTH, KEYS_INFO_WIDTH], 1);
-    let second_score_board = get_vertical(&horizontal_chunks[6], vec![SCORE_BAR_WIDTH],0);
+    let second_board = get_vertical(&horizontal_chunks[4], vec![BOARD_WIDTH], 0);
+    let second_keys_info =
+        get_vertical(&horizontal_chunks[4], vec![BOARD_WIDTH, KEYS_INFO_WIDTH], 1);
+    let second_score_board = get_vertical(&horizontal_chunks[6], vec![SCORE_BAR_WIDTH], 0);
 
     layouts.insert("first_board".to_string(), first_board);
     layouts.insert("first_keys_info".to_string(), first_keys_info);

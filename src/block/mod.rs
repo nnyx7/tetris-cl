@@ -48,10 +48,10 @@ impl Block {
         self.cur_pos = (self.cur_pos + 1) % self.positions.len();
         let cur_pos_rect = self.pos_rects[self.cur_pos].clone();
         let before = self.rect.clone();
-        
+
         // If the block is in the left corner, move it right enough to rotate
         while self.rect.x as i16 + cur_pos_rect.x < rect.x as i16 {
-            if !self.move_right(rect, state, bg_color){
+            if !self.move_right(rect, state, bg_color) {
                 self.cur_pos = (self.cur_pos + self.positions.len() - 1) % self.positions.len();
                 return;
             }

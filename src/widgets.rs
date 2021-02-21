@@ -74,7 +74,7 @@ pub fn keys_info(keys: HashMap<String, Key>) -> Paragraph<'static> {
             format!("{} : {:?}", key, value),
             Style::default().fg(Color::LightRed),
         )));
-        }
+    }
 
     Paragraph::new(text)
         .alignment(Alignment::Center)
