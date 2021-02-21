@@ -9,8 +9,9 @@ use tui::{
 
 use crate::block::{does_intersect, Block};
 
-const ROWS: u16 = 20;
-const COLS: u16 = 10;
+pub const ROWS: u16 = 20;
+pub const COLS: u16 = 10;
+const SCORE_FOR_LINE: u32 = COLS as u32 * 3;
 
 lazy_static! {
     static ref TETRIS_BLOCKS: [Block; 7] = [
@@ -32,6 +33,7 @@ pub struct Board {
     block: Block,
     has_game_ended: bool,
     tick_count: u8,
+    score: u32,
 }
 
 impl Default for Board {
@@ -58,6 +60,7 @@ impl Default for Board {
 
         let has_game_ended = false;
         let tick_count = 0;
+        let score = 0;
 
         let mut board = Board {
             state,
@@ -66,6 +69,7 @@ impl Default for Board {
             block,
             has_game_ended,
             tick_count,
+            score,
         };
         board.draw_block();
 
@@ -75,7 +79,7 @@ impl Default for Board {
 
 impl Widget for Board {
     fn render(self, area: Rect, buffer: &mut Buffer) {
-        for i in 0..self.rect.width*2 {
+        for i in 0..self.rect.width * 2 {
             for j in 0..self.rect.height {
                 if i < buffer.area().width && j < buffer.area().height {
                     let x = area.x + i;
@@ -95,12 +99,16 @@ impl Board {
             Key::Char('d') => self.move_right(),
             Key::Char('s') => {
                 self.move_down();
+                if !self.is_put_down() {
+                    self.score += 1;
+                }
             }
             Key::Char('w') => {
                 self.rotate();
             }
             Key::Char('p') => {
                 self.put_block();
+                self.score += 5;
             }
             _ => (),
         };
@@ -120,7 +128,7 @@ impl Board {
         self.draw_block();
     }
 
-    fn move_down(&mut self) {
+    pub fn move_down(&mut self) {
         self.erase_block();
         self.block
             .move_down(&self.rect, &self.state, &self.bg_color);
@@ -154,7 +162,7 @@ impl Board {
             .move_down(&self.rect, &self.state, &self.bg_color)
         {}
         self.draw_block();
-        self.remove_full_lines();
+        self.score += SCORE_FOR_LINE * self.remove_full_lines() as u32;
         self.init_block();
 
         if does_intersect(
@@ -218,7 +226,7 @@ impl Board {
         if self.tick_count == 3 {
             self.put_block();
             self.tick_count = 0;
-    }
+        }
     }
 
     pub fn is_put_down(&mut self) -> bool {
@@ -227,5 +235,9 @@ impl Board {
         let ans = !block_copy.move_down(&self.rect, &self.state, &self.bg_color);
         self.draw_block();
         ans
+    }
+
+    pub fn score(&self) -> u32 {
+        self.score
     }
 }

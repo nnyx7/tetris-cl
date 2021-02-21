@@ -1,8 +1,13 @@
 use std::collections::HashMap;
 use tui::layout::{Constraint, Direction, Layout, Rect};
 
-const ROWS: u16 = 20;
-const COLS: u16 = 20;
+use crate::board;
+
+const BOARD_WIDTH: u16 = board::COLS * 2;
+const BOARD_HEIGHT: u16 = board::ROWS;
+
+const SCORE_BAR_WIDTH: u16 = board::ROWS;
+const SCORE_BAR_HEIGHT: u16 = 14;
 
 pub fn get_layouts(rect: Rect) -> HashMap<String, Rect> {
     let mut layouts: HashMap<String, Rect> = HashMap::new();
@@ -11,20 +16,28 @@ pub fn get_layouts(rect: Rect) -> HashMap<String, Rect> {
         .direction(Direction::Horizontal)
         .constraints(
             [
-                Constraint::Length(ROWS),
+                Constraint::Length(BOARD_HEIGHT),
+                Constraint::Length(5),
+                Constraint::Length(SCORE_BAR_HEIGHT),
                 Constraint::Length(10),
-                Constraint::Length(ROWS),
+                Constraint::Length(BOARD_HEIGHT),
+                Constraint::Length(5),
+                Constraint::Length(SCORE_BAR_HEIGHT),
                 Constraint::Min(0),
             ]
             .as_ref(),
         )
         .split(rect);
 
-    let first_board = get_vertical(&horizontal_chunks[0], COLS);
-    let second_board = get_vertical(&horizontal_chunks[2], COLS);
+    let first_board = get_vertical(&horizontal_chunks[0], BOARD_WIDTH);
+    let first_score_board = get_vertical(&horizontal_chunks[2], SCORE_BAR_WIDTH);
+    let second_board = get_vertical(&horizontal_chunks[4], BOARD_WIDTH);
+    let second_score_board = get_vertical(&horizontal_chunks[6], SCORE_BAR_WIDTH);
 
     layouts.insert("first_board".to_string(), first_board);
+    layouts.insert("first_score_board".to_string(), first_score_board);
     layouts.insert("second_board".to_string(), second_board);
+    layouts.insert("second_score_board".to_string(), second_score_board);
 
     return layouts;
 }

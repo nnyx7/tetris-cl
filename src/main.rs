@@ -2,17 +2,17 @@ mod block;
 mod board;
 mod event;
 mod layout_manager;
-mod screens;
+mod widgets;
 
 use board::Board;
 use event::{Config, Event, Events};
 use layout_manager::get_layouts;
-use screens::game_over;
 use std::error::Error;
 use std::io;
 use std::time::Duration;
 use termion::{event::Key, raw::IntoRawMode, screen::AlternateScreen};
 use tui::{backend::TermionBackend, Terminal};
+use widgets::{game_over, score_bar};
 
 #[macro_use]
 extern crate lazy_static;
@@ -29,7 +29,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         tick_rate: Duration::from_millis(500),
     };
 
-    let events =  Events::with_config(config);
+    let events = Events::with_config(config);
 
     let mut board = Board::default();
 
@@ -41,6 +41,10 @@ fn main() -> Result<(), Box<dyn Error>> {
                 f.render_widget(
                     board.clone(),
                     *layouts.get(&"first_board".to_string()).unwrap(),
+                );
+                f.render_widget(
+                    score_bar(board.score()),
+                    *layouts.get(&"first_score_board".to_string()).unwrap(),
                 );
             } else {
                 let screen = game_over();
@@ -55,7 +59,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                 _ => board.make_action(&key),
             },
             Event::Tick => {
-                board.make_action(&Key::Char('s'));
+                board.move_down();
                 board.tick_count();
             }
         }
